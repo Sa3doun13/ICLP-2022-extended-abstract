@@ -67,17 +67,9 @@ More specifically, the MPF-JSS is defined as a set of $n$ jobs. Each job has a s
   \item the required resources must be available while executing an operation.
 \end{enumerate*}
 
-\begin{figure}[bt]
-	\centering
-	\includegraphics[width=0.6\linewidth]{figures/incremental.pdf}
-	\caption{Incremental approach \label{fig:inc}}
-        \smallskip %	\vspace{5pt}
-        \bigskip
-	\includegraphics[width=0.6\linewidth]{figures/exponential.pdf}
-	\caption{Exponential approach \label{fig:exp}}
-\end{figure}
 
-Answer Set Programming (ASP) modulo Difference Logic (DL) has already been used in the literature to solve scheduling problems and to overcome the grounding issue occurring when dealing with a large number of possible time points (\cite{DBLP:conf/lpnmr/AbelsJOSTW19}). Here, we also exploit the power of multi-shot solving to find an upper bound on the tardiness and thus provide a good starting point for the optimization methods of an ASP solver. 
+
+Answer Set Programming (ASP) modulo Difference Logic (DL) has already been used in the literature to solve scheduling problems and to overcome the grounding issue occurring when dealing with a large number of possible time points (\cite{DBLP:conf/lpnmr/AbelsJOSTW19}). Also, we exploit the power of multi-shot solving to find an upper bound on the tardiness and provide a good starting point for ASP optimization methods. 
 
 We propose two different strategies. The idea of the first approach is to incrementally increase the upper bound on the tardiness of each job in order to identify an interval for which a schedule exists.
 %
@@ -90,7 +82,7 @@ The second approach finds the upper tardiness bound \lstinline{n} by performing 
 \section{Results}
 
 We conduct our experiments on a set of real-world instances of the \jss problem retrieved from the daily operations history of a semiconductor Fault Analysis (FA) Lab.%  
-
+%
 We extracted instances for ten random days representing a snapshot of the situation in the lab. The resulting instances have the following approximate number of fixed components defined by the properties of the studied lab:
 \begin{enumerate*}[label=\emph{(\roman*)}]
 	\item $50$ operations,
@@ -99,10 +91,19 @@ We extracted instances for ten random days representing a snapshot of the situat
 \end{enumerate*}
 For each of the days chosen, the number of open jobs ranges between $30$ and $50$. We split each day-instance into sub-instances, with the aim of having instances of increasing size in multiples of $5$, which resulted in a total of $91$ instances.
 
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=0.6\linewidth]{figures/cactus_time_font20.pdf}
-	\caption{Cactus plot of solving times \label{fig:cactus:time}}
+\begin{figure}
+	\begin{minipage}{.5\textwidth}
+		\includegraphics[width=\linewidth]{figures/incremental.pdf}
+		\caption{Incremental approach \label{fig:inc}}
+			\smallskip %	\vspace{5pt}
+			\bigskip
+		\includegraphics[width=\linewidth]{figures/exponential.pdf}
+		\caption{Exponential approach \label{fig:exp}}
+	\end{minipage}%
+	\begin{minipage}{.5\textwidth}
+		\includegraphics[width=\linewidth]{figures/cactus_time_font20.pdf}
+		\caption{Cactus plot of solving times \label{fig:cactus:time}}
+	\end{minipage}
 \end{figure}
 
 For each obtained instance, we ran three ASP programs: 
@@ -117,12 +118,14 @@ The experiments were conducted on a workstation with Ubuntu $18.05$, Intel  $393
 
 Figure \ref{fig:cactus:time} shows a comparison of the solving performance of the two multi-shot approaches and the single-shot version. The single-shot program reached the timeout for instances with more than $20$ jobs and only managed to find a schedule for instances with $15$ jobs for two days -- Day 2 and Day 9.
 %
-The two multi-shot approaches significantly outperformed the single-shot version, which reached the timeout for all the instances having more than $20$ jobs. The exponential version solved $87$ instances out of $91$ within the timeout considered, while the incremental version solved $85$ instances. The exponential approach performs slightly better since it always found a tighter upper bound for tardiness, thus, leaving fewer choices for the optimization strategy of the ASP solver. Nevertheless, the differences between the approaches discussed in Section \ref{sec:aspmodeling} were also confirmed in the evaluation. That is, in our experiments, the incremental variant was able to obtain better solutions for three instances with an average total tardiness improvement of 80 minutes.
+The two multi-shot approaches significantly outperformed the single-shot version, which reached the timeout for all the instances having more than $20$ jobs. The exponential version solved $87$ instances out of $91$ within the timeout considered, while the incremental version solved $85$ instances. The exponential approach performs slightly better since it always found a tighter upper bound for tardiness, thus, leaving fewer choices for the optimization strategy of the ASP solver. Nevertheless, 
+%the differences between the approaches discussed in Section \ref{sec:aspmodeling} were also confirmed in the evaluation. That is, 
+in our experiments, the incremental variant was able to obtain better solutions for three instances with an average total tardiness improvement of 80 minutes.
 
-\section{Conclusions}
-This paper introduces a Multi-resource Partial-ordering Flexible Job-Shop Scheduling (\jss) problem and provides an encoding using ASP modulo DL. The two presented multi-shot solving strategies can find reasonable approximations of tardiness bounds for a set of real-world instances representing daily schedules for a Fault Analysis lab. %Standard single-shot solving could not accomplish the optimization within the same time limit.
-
-In the future, we plan to test the proposed encodings on different problem types to reinforce the assessment. In addition, we aim to devise multi-shot solving strategies with machine learning that can take advantage of historical data, which is often available in industrial application scenarios. 
+%\section{Conclusions}
+%This paper introduces a Multi-resource Partial-ordering Flexible Job-Shop Scheduling (\jss) problem and provides an encoding using ASP modulo DL. The two presented multi-shot solving strategies can find reasonable approximations of tardiness bounds for a set of real-world instances representing daily schedules for a Fault Analysis lab. %Standard single-shot solving could not accomplish the optimization within the same time limit.
+%
+%In the future, we plan to test the proposed encodings on different problem types to reinforce the assessment. In addition, we aim to devise multi-shot solving strategies with machine learning that can take advantage of historical data, which is often available in industrial application scenarios. 
 %In particular, we are going to study combinations of ASP with (supervised) machine learning models trained to guide the search procedure of a solver by giving preference to operations to schedule in successive solving steps. 
 
 %\nocite{*}
