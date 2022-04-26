@@ -15,18 +15,28 @@
 
 
 \newcommand{\jss}{MPF-JSS\xspace}
-\title{Solving a Multi-resource Partial-ordering Flexible Variant of the Job-shop Scheduling Problem with Hybrid ASP\thanks{This work was done during internship of Giulia Francescutto at Infineon Technologies Austria AG}}
+\title{Solving a Multi-resource Partial-ordering Flexible Variant of the Job-shop Scheduling Problem with Hybrid ASP (Extended Abstract) \thanks{This work was done during an internship of Giulia Francescutto at Infineon Technologies Austria AG and has also been presented at the 17th European Conference on Logics in Artificial Intelligence (JELIA 2021).
+Mohammed M.\ S.\ El-Kholany was supported by
+KWF project 28472,
+cms electronics GmbH,
+FunderMax GmbH,
+Hirsch Armbänder GmbH,
+incubed IT GmbH,
+Infineon Technologies Austria AG,
+Isovolta AG,
+Kostwein Holding GmbH, and
+Privatstiftung Kärntner Sparkasse.}}
 \author{Giulia Francescutto
-\institute{Siemens AG {\"O}sterreich\\ Vienna, Austria}
+\institute{Siemens AG {\"O}sterreich, Vienna, Austria}
 \email{giulia.francescutto@siemens.com}
 \and
 Konstantin Schekotihin
-\institute{Alpen-Adria-Univeristy\\
+\institute{University of Klagenfurt,
 Klagenfurt, Austria}
 \email{konstantin.schekotihin@aau.at}
 \and
 Mohammed M. S. El-Kholany
-\institute{Alpen-Adria-Univeristy, Klagenfurt, Austria}
+\institute{University of Klagenfurt, Klagenfurt, Austria}
 \institute{Cairo University, Cairo, Egypt}
 \email{mohammed.el-kholany@aau.at}
 }
@@ -37,12 +47,25 @@ Mohammed M. S. El-Kholany
 \maketitle
 
 \begin{abstract}
-  In many industries, scheduling is a key component to efficient management of resources and, thus, ensuring competitiveness and success of companies by minimizing the waste of time and money. In this work, we propose a \emph{Multi-resource Partial-ordering Flexible Job-shop Scheduling} (\jss) formulation to capture scheduling scenarios where partially-ordered sequences of operations must be scheduled on multiple required resources, such as tools and specialists.
-  The resources are flexible and can process one or more operations based on their characteristics. We have built a model using Answer Set Programming (ASP) in which the execution time of operations is determined using Difference Logic. Furthermore, we introduced two multi-shot strategies that identify the time bounds and find a schedule while minimizing the total tardiness. We conducted experiments on a set of instances provided by a semiconductor manufacturer, and the results showed that the proposed model could find schedules for 87 out of 91 real-world instances.
+  In many industries, scheduling is a key component to efficient management of resources and, thus, ensuring competitiveness and success of companies by reducing the consumption of time and money. In this work, we propose a \emph{Multi-resource Partial-ordering Flexible Job-shop Scheduling} % (\jss)
+  formulation to capture scheduling scenarios where partially-ordered sequences of operations must be scheduled on multiple required resources, such as tools and specialists.
+  The resources are flexible and can process one or more kind of operations based on their characteristics. We have built a model using Answer Set Programming % (ASP) 
+  in which the execution time of operations is determined using Difference Logic. Furthermore, we introduced two multi-shot strategies that identify the time bounds and find a schedule while minimizing the total tardiness. 
+  Experiments on % a set of 
+  instances provided by a semiconductor manufacturer
+  % , and the results showed show 
+  show that the proposed model % could find 
+  yields schedules for 87 out of 91 real-world instances.
 \end{abstract}
 
 \section{Introduction}
-Scheduling systems play an essential role in the success of manufacturing processes, transportation, or cloud computing. Inefficient management of resources results in costly delays and waste of expensive machinery. The Job-shop Scheduling (JSS) problem is one of the most well-known scheduling problems, in which a set of machines should execute a set of jobs represented as a sequence of operations. The goal is to complete all the jobs as soon as possible. From this generic formulation, several other scheduling problems have been defined by adding extensions with targeted features that have the goal to formalize in the best possible way real-world scheduling scenarios (\cite{brucker1990job}). %Flexible JSS extends the classical (JSS) problem where an operation can be performed by many machines. The flexible JSS is more complicated because the machine to execute an operation should be determined and then decide the sequence of the operations assigned to each machine \cite{brucker1990job}. 
+% Scheduling systems play an essential role in the success of manufacturing processes, transportation, or cloud computing. Inefficient management of resources results in costly delays and waste of expensive machinery.
+Job-shop Scheduling (JSS) \cite{johnson1954optimal} is one of the most well-known scheduling problems in which a set of machines are used to execute given jobs, represented as sequences of operations, and the goal is to complete the jobs as soon as possible.
+Extensions like flexible \cite{brucker1990job} and multi-resource
+\cite{DBLP:journals/eor/Dauzere-PeresRL98} JSS
+generalize the allocation of a machine and additional resources for an operation
+to suit practical scheduling applications.
+% From this generic formulation, several other scheduling problems have been defined by adding extensions with targeted features that have the goal to formalize in the best possible way real-world scheduling scenarios (\cite{brucker1990job}). %Flexible JSS extends the classical (JSS) problem where an operation can be performed by many machines. The flexible JSS is more complicated because the machine to execute an operation should be determined and then decide the sequence of the operations assigned to each machine \cite{brucker1990job}. 
 %Increasing the number of resources to operate makes the problem harder where in some plants, machines and engineers are required to execute operations. 
 
 In this work, we present the novel Multi-resource Partial-ordering Flexible JSS (MPF-JSS) problem, where multiple resources are needed for executing operations, and jobs require partial-ordered sets of operations to be completed. Informally, we are given a set of jobs, where each job is described as a partially ordered sequence of operations. We consider two sets of resources that are needed to perform operations. This can be imagined as a scenario where an operation requires both an engineer and a particular machine in order to be executed. Moreover, for each operation, there is more than one resource per resource type that can execute it. 
@@ -92,7 +115,7 @@ We extracted instances for ten random days representing a snapshot of the situat
 For each of the days chosen, the number of open jobs ranges between $30$ and $50$. We split each day-instance into sub-instances, with the aim of having instances of increasing size in multiples of $5$, which resulted in a total of $91$ instances.
 
 \begin{figure}
-	\begin{minipage}{.5\textwidth}
+	\begin{minipage}[b]{.5\textwidth}
 		\includegraphics[width=\linewidth]{figures/incremental.pdf}
 		\caption{Incremental approach \label{fig:inc}}
 			\smallskip %	\vspace{5pt}
@@ -100,8 +123,8 @@ For each of the days chosen, the number of open jobs ranges between $30$ and $50
 		\includegraphics[width=\linewidth]{figures/exponential.pdf}
 		\caption{Exponential approach \label{fig:exp}}
 	\end{minipage}%
-	\begin{minipage}{.5\textwidth}
-		\includegraphics[width=\linewidth]{figures/cactus_time_font20.pdf}
+	\begin{minipage}[b]{.5\textwidth}
+		\includegraphics[width=\linewidth]{figures/cactus\string_time\string_font20.pdf}
 		\caption{Cactus plot of solving times \label{fig:cactus:time}}
 	\end{minipage}
 \end{figure}
