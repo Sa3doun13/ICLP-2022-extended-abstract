@@ -52,7 +52,7 @@ Mohammed M. S. El-Kholany
   The resources are flexible and can process one or more kind of operations based on their characteristics. We have built a model using Answer Set Programming % (ASP) 
   in which the execution time of operations is determined using Difference Logic. Furthermore, we introduced two multi-shot strategies that identify the time bounds and find a schedule while minimizing the total tardiness. 
   Experiments on % a set of 
-  instances provided by a semiconductor manufacturer
+  instances from an Infineon Fault Analysis lab % provided by a semiconductor manufacturer
   % , and the results showed show 
   show that the proposed model % could find 
   yields schedules for 87 out of 91 real-world instances.
@@ -68,12 +68,23 @@ to suit practical scheduling applications.
 % From this generic formulation, several other scheduling problems have been defined by adding extensions with targeted features that have the goal to formalize in the best possible way real-world scheduling scenarios (\cite{brucker1990job}). %Flexible JSS extends the classical (JSS) problem where an operation can be performed by many machines. The flexible JSS is more complicated because the machine to execute an operation should be determined and then decide the sequence of the operations assigned to each machine \cite{brucker1990job}. 
 %Increasing the number of resources to operate makes the problem harder where in some plants, machines and engineers are required to execute operations. 
 
-In this work, we present the novel Multi-resource Partial-ordering Flexible JSS (MPF-JSS) problem, where multiple resources are needed for executing operations, and jobs require partial-ordered sets of operations to be completed. Informally, we are given a set of jobs, where each job is described as a partially ordered sequence of operations. We consider two sets of resources that are needed to perform operations. This can be imagined as a scenario where an operation requires both an engineer and a particular machine in order to be executed. Moreover, for each operation, there is more than one resource per resource type that can execute it. 
-The goal is to find the best possible allocation of operations to resource wrt. to some predefined criteria, like the minimization of tardiness. 
+In this work, we consider a \emph{Multi-resource Partial-ordering Flexible JSS} (MPF-JSS) problem, where multiple resources are needed for executing operations, and jobs consist of partially-ordered sequences of operations to be completed.
+% Informally, we are given a set of jobs, where each job is described as a partially ordered sequence of operations.
+More specifically, we distinguish machines and engineers as two separate sets of resources
+required to perform an operation.
+Flexibility lies in the choice among several resources with the required skills in each category.
+% We consider two sets of resources that are needed to perform operations. This can be imagined as a scenario where an operation requires both an engineer and a particular machine in order to be executed. Moreover, for each operation, there is more than one resource per resource type that can execute it. 
+The goal is to determine the best possible execution order and allocation of operations to resources % wrt. to some predefined criteria, like the minimization of 
+for minimizing the total tardiness of jobs wrt.\ their deadlines. 
 
-To solve MPF-JSS, an encoding using Answer Set Programming with Difference Logic \cite{gebser2016theory} and Multi-shot solving \cite{gebser2019multi} is proposed. Difference constraints allow one to express timing requirements compactly, avoiding grounding issues that occur when a feasible schedule requires a larger time point. We make use of Multi-shot solving to implement two strategies to identify an upper bound on the schedule.
+We model the MPF-JSS problem by an encoding in Answer Set Programming (ASP) with Difference Logic (DL) \cite{gebser2016theory} and take advantage of multi-shot solving \cite{gebser2019multi}.
+DL constraints allow for compactly expressing timing requirements, avoiding grounding issues that would otherwise be encountered when a feasible schedule necessitates a large number of time points.
+By means of multi-shot solving, we implement two strategies to identify upper time bounds on feasible schedules whose tardiness is further subject to minimization.
 % in which a given set of jobs, represented as a partially-ordered set of operations, and two sets of resources that can perform many operations. These resources are tools and engineers trained to operate these operations while optimizing a particular criterion such as tardiness. |This work introduces a model based on Answer Set Programming with Difference Logic \cite{gebser2016theory} to provide an efficient schedule for solving MPF-JSS problem. We suggested applying two different strategies based on the multi-shot solving technique \cite{gebser2019multi} which allows identifying an upper bound on the schedule. 
-We tested our proposed model based on a dataset representing ten working days of an Infineon Fault Analysis lab. The experimental evaluation confirmed that approaching \jss without relying on Multi-shot capabilities is not feasible when the number of entities involved is significant.  %Each instance represents a whole operational day that was split into smaller instances enabling a detailed assessment of the solving performance. The results showed that obtaining a complete schedule while solving the whole problem in a single shot is impossible. However, applying the multi-shot solving techniques could find schedules for 87 instances out of 91. 
+We tested our proposed model on a dataset representing ten operational days of an Infineon Fault Analysis lab.
+Our experiments yield success to obtain schedules for 87 out of 91 real-world instances,
+while only a very small number of jobs can be handled without multi-shot solving.
+%Each instance represents a whole operational day that was split into smaller instances enabling a detailed assessment of the solving performance. The results showed that obtaining a complete schedule while solving the whole problem in a single shot is impossible. However, applying the multi-shot solving techniques could find schedules for 87 instances out of 91. 
 
 \section{Modeling MPF-JSS with Hybrid ASP}\label{sec:aspmodeling}
 We consider a scheduling problem in which different resources are interrelated to process the incoming jobs. In particular, MPF-JSS is an extension of the classical JSS problem where three new aspects are considered: 
