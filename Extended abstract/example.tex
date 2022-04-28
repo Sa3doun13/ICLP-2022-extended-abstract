@@ -87,31 +87,51 @@ while only a very small number of jobs can be handled without multi-shot solving
 %Each instance represents a whole operational day that was split into smaller instances enabling a detailed assessment of the solving performance. The results showed that obtaining a complete schedule while solving the whole problem in a single shot is impossible. However, applying the multi-shot solving techniques could find schedules for 87 instances out of 91. 
 
 \section{Modeling MPF-JSS with Hybrid ASP}\label{sec:aspmodeling}
-We consider a scheduling problem in which different resources are interrelated to process the incoming jobs. In particular, MPF-JSS is an extension of the classical JSS problem where three new aspects are considered: 
+We consider a scheduling problem in which different resources are interrelated to process the upcoming operations. In particular, MPF-JSS is an extension of the classical JSS problem where three additional aspects are considered: 
 \begin{enumerate*}[label=\emph{(\alph*)}]
-	\item \emph{Multi-resources} -- there are two different resources potentially required to execute an operation; 
-	\item \emph{Partially-ordered} -- some operations cannot be executed before completing their predecessors and others do not require such constraint; and
-	\item \emph{Flexible} -- an operation can be executed by various resources. 
+	\item \emph{Multi-resources} -- several categories of resources can be required to execute an operation; 
+	\item \emph{Partially-ordered} -- some operations cannot be executed before completing their predecessors and others are unaffected by such constraints; and
+	\item \emph{Flexible} -- an operation can be performed by a variety of available resources. 
 \end{enumerate*}
-More specifically, the MPF-JSS is defined as a set of $n$ jobs. Each job has a set of $o$ operations. Some of these operations depend on their predecessors. A set of $m$ machines and $w$ engineers are required to process these operations. The following constraints must be respected:
+More specifically, an MPF-JSS instance consists of a set of jobs,
+characterized by a partially ordered set of operations to be performed,
+where each operation needs to be allocated to some machine and (possibly) an
+engineer with the required skills.
+The following constraints must be respected:
 \begin{enumerate*}[label=\emph{(\roman*)}]
-  \item once the operation starts, it cannot be interrupted;
-  \item each resource can perform only one operation at a time;
-  \item operations must be scheduled according to the given partial order; and
-  \item the required resources must be available while executing an operation.
+  \item once an operation starts, it cannot be interrupted;
+  \item each resource can perform only one operation at a time; 
+  \item the execution times of operations of the same job cannot overlap; and
+  \item operations must be scheduled according to the partial order given by jobs. % ; and
+  % \item the required resources must be available while executing an operation.
 \end{enumerate*}
 
 
 
-Answer Set Programming (ASP) modulo Difference Logic (DL) has already been used in the literature to solve scheduling problems and to overcome the grounding issue occurring when dealing with a large number of possible time points (\cite{DBLP:conf/lpnmr/AbelsJOSTW19}). Also, we exploit the power of multi-shot solving to find an upper bound on the tardiness and provide a good starting point for ASP optimization methods. 
+% Answer Set Programming (ASP) modulo Difference Logic (DL) has already been used in the literature to solve scheduling problems and to overcome the grounding issue occurring when dealing with a large number of possible time points (\cite{DBLP:conf/lpnmr/AbelsJOSTW19}). Also, we exploit the power of multi-shot solving to find an upper bound on the tardiness and provide a good starting point for ASP optimization methods. 
 
-We propose two different strategies. The idea of the first approach is to incrementally increase the upper bound on the tardiness of each job in order to identify an interval for which a schedule exists.
+We propose two multi-shot ASP modulo DL solving strategies. The first approach incrementally increases the upper bound on the tardiness of each job in order to identify a limit for which schedules are feasible.
 %
-That is, the algorithm starts by considering the $0$ tardiness bound, and if this yields unsatisfiability (UNSAT), it starts to increment the tardiness bounds by a constant. The parameter values are set via a Python control script, which shifts them by the considered window size in each iteration. 
+That is, search starts with the tardiness bound $0$, and if this yields unsatisfiability (UNSAT), the bound is incremented by a constant, 
+set by a parameter of our Python control script on top of
+\emph{clingo}[DL] \cite{DBLP:journals/tplp/JanhunenKOSWS17},
+and this process proceeds until some schedule is found.
+% The parameter values are set via a Python control script, which shifts them by the considered window size in each iteration. 
+%
+Figure~\ref{fig:inc} illustrates an execution of the incremental search strategy, where the bound on jobs' tardiness is increased in steps of size~$2$ until satisfiability (SAT)
+is obtained with the time bound~$8$.
+ASP optimization methods are then used to find a schedule minimizing the total tardiness, i.e., the
+sum of delays over jobs completed after their deadlines.
 
-Figure \ref{fig:inc} illustrates a sample execution of the incremental search algorithm, where a tumbling window of size $2$ is moved in each iteration until the target interval for which a schedule exists is found. Once the admissible upper bound \lstinline{n} (and a corresponding lower bound \lstinline{m}) is identified, ASP optimization methods search for an optimal solution within this interval.
-
-The second approach finds the upper tardiness bound \lstinline{n} by performing a binary search that exponentially increments \lstinline{n} until the first schedule is identified, and then converges to the smallest \lstinline{n} for which the scheduling problem is still satisfiable (SAT). Figure \ref{fig:exp} illustrates the process converging to the upper bound~$7$, relative to which the tardiness optimization is performed in the second step.
+The second approach performs an exponential binary search for the exact tardiness bound
+at which schedules get feasible.
+As displayed in Figure~\ref{fig:exp},
+the increment on the bound is gradually increased up to step size~$4$ for finding the
+first schedule with the time bound~$8$.
+A binary search scheme then successively halves the step size for converging to
+the exact bound, $7$ in this case, for which schedules are feasible, whose total
+tardiness is subject to ASP optimization in the last phase of the multi-shot solving process.
+% The second approach finds the upper tardiness bound \lstinline{n} by performing a binary search that exponentially increments \lstinline{n} until the first schedule is identified, and then converges to the smallest \lstinline{n} for which the scheduling problem is still satisfiable (SAT). Figure \ref{fig:exp} illustrates the process converging to the upper bound~$7$, relative to which the tardiness optimization is performed in the second step.
 
 \section{Results}
 
