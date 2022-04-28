@@ -51,11 +51,12 @@ Mohammed M. S. El-Kholany
   formulation to capture scheduling scenarios where partially-ordered sequences of operations must be scheduled on multiple required resources, such as tools and specialists.
   The resources are flexible and can process one or more kind of operations based on their characteristics. We have built a model using Answer Set Programming % (ASP) 
   in which the execution time of operations is determined using Difference Logic. Furthermore, we introduced two multi-shot strategies that identify the time bounds and find a schedule while minimizing the total tardiness. 
-  Experiments on % a set of 
+  Experiments on real-world % a set of 
   instances from an Infineon Fault Analysis lab % provided by a semiconductor manufacturer
   % , and the results showed show 
-  show that the proposed model % could find 
-  yields schedules for 87 out of 91 real-world instances.
+  show that the devised model % could find 
+  yields optimized schedules for $87$ out of $91$ % real-world 
+  instances.
 \end{abstract}
 
 \section{Introduction}
@@ -82,7 +83,7 @@ DL constraints allow for compactly expressing timing requirements, avoiding grou
 By means of multi-shot solving, we implement two strategies to identify upper time bounds on feasible schedules whose tardiness is further subject to minimization.
 % in which a given set of jobs, represented as a partially-ordered set of operations, and two sets of resources that can perform many operations. These resources are tools and engineers trained to operate these operations while optimizing a particular criterion such as tardiness. |This work introduces a model based on Answer Set Programming with Difference Logic \cite{gebser2016theory} to provide an efficient schedule for solving MPF-JSS problem. We suggested applying two different strategies based on the multi-shot solving technique \cite{gebser2019multi} which allows identifying an upper bound on the schedule. 
 We tested our proposed model on a dataset representing ten operational days of an Infineon Fault Analysis lab.
-Our experiments yield success to obtain schedules for 87 out of 91 real-world instances,
+Our experiments yield success to optimize schedules for $87$ out of $91$ real-world instances,
 while only a very small number of jobs can be handled without multi-shot solving.
 %Each instance represents a whole operational day that was split into smaller instances enabling a detailed assessment of the solving performance. The results showed that obtaining a complete schedule while solving the whole problem in a single shot is impossible. However, applying the multi-shot solving techniques could find schedules for 87 instances out of 91. 
 
@@ -135,16 +136,23 @@ tardiness is subject to ASP optimization in the last phase of the multi-shot sol
 
 \section{Results}
 
-We conduct our experiments on a set of real-world instances of the \jss problem retrieved from the daily operations history of a semiconductor Fault Analysis (FA) Lab.%  
+We conducted experiments on a set of real-world instances of the \jss problem 
+representing the operations at ten days randomly selected from the work
+records of an Infineon Fault Analysis lab.
 %
-We extracted instances for ten random days representing a snapshot of the situation in the lab. The resulting instances have the following approximate number of fixed components defined by the properties of the studied lab:
+% We extracted instances for ten random days representing a snapshot of the situation in the lab. 
+The instances yield the following approximate number of components based on the dimensions of the studied lab:
 \begin{enumerate*}[label=\emph{(\roman*)}]
-	\item $50$ operations,
-	\item $75$ machines, and 
-	\item $45$ workers.
+	\item $50$ operation kinds;
+	\item $75$ machines; and 
+	\item $45$ engineers.
 \end{enumerate*}
-For each of the days chosen, the number of open jobs ranges between $30$ and $50$. We split each day-instance into sub-instances, with the aim of having instances of increasing size in multiples of $5$, which resulted in a total of $91$ instances.
-
+For each of the selected days, the number of jobs ranges between $30$ and $50$.
+We further split each instance into up to ten sub-instances by picking
+$5$, $10$, $15$, $20$, etc.\ of the respective jobs,
+% , with the aim of having instances of increasing size in multiples of $5$,
+which resulted in a total of $91$ instances of varying size. % in total.
+%
 \begin{figure}
 	\begin{minipage}[b]{.5\textwidth}
 		\includegraphics[width=\linewidth]{figures/incremental.pdf}
@@ -160,21 +168,38 @@ For each of the days chosen, the number of open jobs ranges between $30$ and $50
 	\end{minipage}
 \end{figure}
 
-For each obtained instance, we ran three ASP programs: 
+For each obtained instance, we ran three solving strategies with \emph{clingo}[DL] (version 1.1.0): 
 \begin{enumerate*}[label=\emph{(\arabic*)}]	
-	\item \emph{single-shot} -- base program with a tardiness bound precomputed using a heuristic,
-	\item \emph{inc} -- the incremental multi-shot ASP variant, and 
-	\item \emph{exp} -- the exponential multi-shot ASP search approach.
+	\item \emph{single-shot} -- standard ASP modulo DL program with a tardiness bound precomputed using a heuristic;
+	\item \emph{inc} -- the incremental multi-shot variant
+	                    with a constant step size of $20$ time points; and 
+	\item \emph{exp} -- the exponential multi-shot solving approach.
 \end{enumerate*}
+We restricted each solver run to $2$ hours wall clock time on an
+Intel $3930$K workstation with $64$GB RAM under Ubuntu $18.05$. 
 %We compared the multi-shot approaches to a single-shot version where the bound is computed in advance as the sum of durations of all operations in an instance.
 %This bound is introduced as a constant in the ASP single-shot program.
-The experiments were conducted on a workstation with Ubuntu $18.05$, Intel  $3930$K, and $64$GB RAM. In our experiments, we use \emph{clingo}[DL] 1.1.0 and \emph{clingo} 5.4.0 with multi-shot solving controlled by the main routine in Python 3.8.5. We run the solver up to a timeout of $2$ hours for each instance. For the incremental approach, we chose to use a constant tumbling window of $20$ minutes.
+% The experiments were performed on a workstation with Ubuntu $18.05$, Intel  $3930$K, and $64$GB RAM. 
+% In our experiments, we use \emph{clingo}[DL] 1.1.0 and \emph{clingo} 5.4.0 with multi-shot solving controlled by the main routine in Python 3.8.5.
+% We run the solver up to a timeout of $2$ hours for each instance. For the incremental approach, we chose to use a constant step size of $20$ time points.
 
-Figure \ref{fig:cactus:time} shows a comparison of the solving performance of the two multi-shot approaches and the single-shot version. The single-shot program reached the timeout for instances with more than $20$ jobs and only managed to find a schedule for instances with $15$ jobs for two days -- Day 2 and Day 9.
+Figure~\ref{fig:cactus:time} shows a cactus plot comparing
+the solving performance of the two multi-shot approaches and the single-shot version
+as baseline.
+The latter times out on all instances with more than $15$ jobs and merely succeeds to
+optimize schedules on instances with $15$ jobs for two of the ten days.
 %
-The two multi-shot approaches significantly outperformed the single-shot version, which reached the timeout for all the instances having more than $20$ jobs. The exponential version solved $87$ instances out of $91$ within the timeout considered, while the incremental version solved $85$ instances. The exponential approach performs slightly better since it always found a tighter upper bound for tardiness, thus, leaving fewer choices for the optimization strategy of the ASP solver. Nevertheless, 
+The two multi-shot approaches significantly outperform the single-shot version. % , which reached the timeout for all the instances having more than $20$ jobs.
+While the incremental strategy yields optimized schedules for $85$ out of $91$ instances,
+the exponential multi-shot variant scales up to $87$ instances.
+This advantage is due to tighter tardiness bounds identified by the exponential 
+strategy, thus reducing the efforts for ASP optimization to minimize the total tardiness.
+% The exponential version solved $87$ instances out of $91$ within the timeout considered, while the incremental version solved $85$ instances.
+% The exponential approach performs slightly better since it always found a tighter upper bound for tardiness, thus, leaving fewer choices for the optimization strategy of the ASP solver. Nevertheless, 
 %the differences between the approaches discussed in Section \ref{sec:aspmodeling} were also confirmed in the evaluation. That is, 
-in our experiments, the incremental variant was able to obtain better solutions for three instances with an average total tardiness improvement of 80 minutes.
+Given that a lower tardiness bound is more restrictive,
+% in our experiments,
+the incremental variant manages to find better schedules than the exponential strategy for three instances, where the total tardiness improvement amounts to $80$ time points on average.
 
 %\section{Conclusions}
 %This paper introduces a Multi-resource Partial-ordering Flexible Job-Shop Scheduling (\jss) problem and provides an encoding using ASP modulo DL. The two presented multi-shot solving strategies can find reasonable approximations of tardiness bounds for a set of real-world instances representing daily schedules for a Fault Analysis lab. %Standard single-shot solving could not accomplish the optimization within the same time limit.
