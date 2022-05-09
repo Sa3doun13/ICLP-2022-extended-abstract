@@ -11,15 +11,36 @@
 <center>
   <H1>Solving a Multi-resource Partial-ordering Flexible Variant of the Job-shop Scheduling Problem with Hybrid ASP (Extended Abstract)</H1>
 </center>
+<center>
+  <table style="width:50%">
+  <tr>
+    <th>Giulia Francescutto</th>
+    <th>Konstantin Schekotihin</th>
+    <th>Mohammed M. S. El-Kholany</th>
+  </tr>
+  <tr>
+    <td> <center> Siemens AG O¨ sterreich, Vienna, Austria </center> </td>
+    <td> <center> University of Klagenfurt, Klagenfurt, Austria </center> </td>
+    <td> <center> University of Klagenfurt, Klagenfurt, Austria</td> </center>
+  </tr>
+  <tr>
+    <td> <center> giulia.francescutto@siemens.com </center></td>
+    <td> <center> konstantin.schekotihin@aau.at </center></td>
+    <td> <center> mohammed.el-kholany@aau.at </center></td>
+  </tr>
+</table>
+</center>
 
-<H3>Abstract</H3>
-<P>
+<center>
+  <H3> Abstract</H3>
+<P style="margin: 20px; width: 60%">
   In many industries, scheduling is a key component to efficient management of resources and, thus, ensuring competitiveness and success of companies by reducing the consumption of time and money. In this work, we propose a <em> Multi-resource Partial-ordering Flexible Job-shop Scheduling </em> formulation to capture scheduling scenarios where partially-ordered sequences of operations must be scheduled on multiple required resources, such as tools and specialists.
-  The resources are flexible and can process one or more kind of operations based on their characteristics. We have built a model using Answer Set Programming in which the execution time of operations is determined using Difference Logic. Furthermore, we introduced two multi-shot strategies that identify the time bounds and find a schedule while minimizing the total tardiness. Experiments on real-world instances from an Infineon Fault Analysis lab show that the devised model yields optimized schedules for 87 out of 91 instances.
+  The resources are flexible and can process one or more kind of operations based on their characteristics. We have built a model using Answer Set Programming in which the execution time of operations is determined using Difference Logic. Furthermore, we introduced two multi-shot strategies that identify the time bounds and find a schedule while minimizing the total tardiness. Experiments on real-world instances from an Infineon Fault Analysis lab show that the devised model yields optimized schedules for 87 out of 91 instances.  
 </P>
-
+</center>
 
 <H3>1. Introduction</H3>
+
 <P>
 Job-shop Scheduling (JSS) ([<A HREF=#13.7>7</A>]) is one of the most well-known scheduling problems in which a set of machines are used to execute given jobs, represented as sequences of operations, and the goal is to complete the jobs as soon as possible. Extensions like flexible ([<A HREF=#13.1>1</A>]) and multi-resource ([<A HREF=#13.2>2</A>]) JSS generalize the allocation of a machine and additional resources for an operation to suit practical scheduling applications. In this work, we consider a <em> Multi-resource Partial-ordering Flexible JSS </em> (MPF-JSS) problem, where multiple resources are needed for executing operations, and jobs consist of partially-ordered sequences of operations to be completed. More specifically, we distinguish machines and engineers as two separate sets of resources required to perform an operation. Flexibility lies in the choice among several resources with the required skills in each category. The goal is to determine the best possible execution order and allocation of operations to resources for minimizing the total tardiness of jobs wrt. their deadlines. We model the MPF-JSS problem by an encoding in Answer Set Programming (ASP) with Difference Logic (DL) ([<A HREF=#13.4>4</A>]) and take advantage of multi-shot solving ([<A HREF=#13.5>5</A>]). DL constraints allow for compactly expressing timing requirements, avoiding grounding issues that would otherwise be encountered when a feasible schedule necessitates a large number of time points. By means of multi-shot solving, we implement two strategies to identify upper time bounds on feasible schedules whose tardiness is further subject to minimization. We tested our proposed model on a dataset representing ten operational days of an Infineon Fault Analysis lab. Our experiments yield success to optimize schedules for 87 out of 91 real-world instances, while only a very small number of jobs can be handled without multi-shot solving.
 </P>
@@ -35,7 +56,7 @@ We propose two multi-shot ASP modulo DL solving strategies. The first approach i
 The second approach performs an exponential binary search for the exact tardiness bound at which schedules get feasible. As displayed in Figure 2, the increment on the bound is gradually increased up to step size 4 for finding the first schedule with the time bound 8. A binary search scheme then successively halves the step size for converging to the exact bound, 7 in this case, for which schedules are feasible, whose total tardiness is subject to ASP optimization in the last phase of the multi-shot solving process.
 </P>
 
-<H3>2. Modeling MPF-JSS with Hybrid ASP</H3>
+<H3>3. Results</H3>
 <P>
 We conducted experiments on a set of real-world instances of the MPF-JSS problem representing the operations at ten days randomly selected from the work records of an Infineon Fault Analysis lab. The instances yield the following approximate number of components based on the dimensions of the studied lab: <em>(i)</em> 50 operation kinds; <em>(ii)</em> 75 machines; and <em>(iii)</em> 45 engineers. For each of the selected days, the number of jobs ranges between 30 and 50. We further split each instance into up to ten sub-instances by picking 5, 10, 15, 20, etc. of the respective jobs, which resulted in a total of 91 instances of varying size. 
 </P>
