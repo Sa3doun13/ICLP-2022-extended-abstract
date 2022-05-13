@@ -8,3 +8,4 @@
 *.pag
 example.pdf
 *.synctex.gz
+.vscode
